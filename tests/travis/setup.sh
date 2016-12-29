@@ -1,21 +1,26 @@
 #!/bin/bash
 
+if ! tests/travis/is_core_changed.sh
+then
+  exit 0
+fi
+
 if [ ${TRAVIS_OS_NAME} == "osx" ]; then
     brew update
     brew tap homebrew/science
-    brew info opencv
     brew install opencv
     brew install python3
     brew install fftw
+    brew install libpng
     brew install ImageMagick
     if [ ${TASK} == "python_test" ]; then
-        python -m pip install nose numpy --user `whoami`
-        python3 -m pip install nose numpy --user `whoami`
+        python -m pip install --user nose numpy cython
+        python3 -m pip install --user nose numpy cython
     fi
 fi
 
 if [ ${TASK} == "lint" ]; then
-    pip install cpplint 'pylint==1.4.4' 'astroid==1.3.6' --user `whoami`
+    pip install --user cpplint 'pylint==1.4.4' 'astroid==1.3.6'
 fi
 
 if [ ${TASK} == "julia" ]; then
